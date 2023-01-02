@@ -1,13 +1,19 @@
 <template>
   <div class="w-full h-full flex justify-center items-center">
-    <!-- <span class="text-3xl">Good luck!</span> -->
-    <div class="flex flex-col">
-      <p class="text-2xl">{{ jokeQuestion }}</p>
-      <p class="text-1xl" v-if="isJokeAnswerSeen">{{ jokeAnswer }}</p>
-      <button class="bg-green px-8 py-3 rounded-lg hover:opacity-75" v-if="isbtnTellMeSeen" @click="showJokeAns">Tell
-        me!</button>
-      <button class="bg-green px-8 py-3 rounded-lg hover:opacity-75" v-if="isbtnNextSeen" @click="getNextJoke">😂 Next
-        joke</button>
+    <div v-if="isLoading">
+      Loading...
+    </div>
+    <div class="max-w-xs w-full flex flex-col" v-else>
+      <p class="w-3/4 p-4 rounded-2xl bg-slate-400 text-white self-start">{{ jokeQuestion }}</p>
+      <p class="w-3/4 mt-2 p-4 rounded-2xl bg-orange-500 text-white self-end" v-if="isbtnNextSeen">{{ jokeAnswer }}</p>
+
+      <div class="my-4 flex justify-center items-center">
+        <button class="bg-emerald-400 px-8 py-3 rounded-lg hover:opacity-75" v-if="isbtnNextSeen" @click="getJokes">😂
+          Next
+          joke</button>
+        <button class="bg-emerald-400 px-8 py-3 rounded-lg hover:opacity-75" v-else @click="showJoke">Tell
+          me!</button>
+      </div>
     </div>
   </div>
 </template>
@@ -17,29 +23,30 @@ import { ref } from 'vue'
 
 const jokeQuestion = ref('')
 const jokeAnswer = ref('')
-let isJokeAnswerSeen = ref(false)
-let isbtnTellMeSeen = ref(true)
 let isbtnNextSeen = ref(false)
+let isLoading = ref(true)
 
 const getJokes = async () => {
-  const response = await fetch(`https://v2.jokeapi.dev/joke/christmas`)
-  const data = await response.json()
-  jokeQuestion.value = data.setup
-  jokeAnswer.value = data.delivery
+  isbtnNextSeen.value = false
+  isLoading.value = true
+  jokeQuestion.value = ''
+  jokeAnswer.value = ''
+
+  try {
+    const response = await fetch(`https://v2.jokeapi.dev/joke/christmas`).then(response => response.json())
+    jokeQuestion.value = response.setup
+    jokeAnswer.value = response.delivery
+    isLoading.value = false
+  } catch (error) {
+    console.log(error)
+    alert('There is Error!')
+  }
+
 }
 getJokes()
 
-function showJokeAns() {
-  console.log('Button clicked!')
-  isJokeAnswerSeen.value = true
-  isbtnTellMeSeen.value = false
+function showJoke() {
   isbtnNextSeen.value = true
 }
 
-function getNextJoke() {
-  isJokeAnswerSeen.value = false
-  isbtnTellMeSeen.value = true
-  isbtnNextSeen.value = false
-  getJokes()
-}
 </script>
