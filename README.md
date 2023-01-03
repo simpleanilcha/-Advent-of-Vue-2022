@@ -8,3 +8,4 @@
 - [Day 02 - Xmas Joke Generator](https://xmas-joke-generater.netlify.app)
 - [Day 03 - Xmas 2023 Countdown](https://xmas-2023-countdown.netlify.app)
 - [Day 04 - Recursive Xmas Tree](https://recursive-xmas-tree.netlify.app)
+- [Day 05 - Gift Label](https://gift-label.netlify.app)
